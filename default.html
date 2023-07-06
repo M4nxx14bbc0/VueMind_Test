@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Progetto Vue</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<!--        <script src="https://csn.jsdeliver.net/npm/vue/dist/vue.js"></script>-->
+    </head>
+    <body>
+<!--        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>        <h1>Progetto Vue</h1>-->
+        <h1>Progetto Vue</h1>
+        <div id="app">
+            <p>{{title}}</p>
+            <input type="text" v-bind:value="title" @input="changeTitle">
+        </div>
+        <script>
+            new Vue({
+                el:'#app',
+                data: {
+                  title: 'Hello World!'
+                },
+                methods:{
+                    changeTitle: function (event) {
+                        this.title = event.target.value;
+                        setTimeout(()=>{
+                            this.title = "Modificato da JavaScript";
+                        }, 2000);
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
