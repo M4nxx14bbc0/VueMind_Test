@@ -1,23 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
     <head>
         <meta charset="UTF-8">
         <title>Progetto Vue</title>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-<!--        <script src="https://csn.jsdeliver.net/npm/vue/dist/vue.js"></script>-->
+<!--        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     </head>
     <body>
 <!--        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>        <h1>Progetto Vue</h1>-->
         <h1>Progetto Vue</h1>
         <div id="app">
-            <p>{{title}}</p>
-            <input type="text" v-bind:value="title" @input="changeTitle">
+            <h1>Operazioni sui seguenti numeri</h1>
+            <div>
+                <div>
+                    <ul>
+                        <li v-for="n in numberList">{{n}}</li>
+                    </ul>
+                </div>
+                <h3>La somma è {{sum}}</h3>
+                <h3>La media è {{average}}</h3>
+                <div>
+                    <h3>Aggiungi un elemento</h3>
+                    <input type="number" v-model="number" @keyup.enter="addNumber">
+                    <a href="/" @click.prevent="sum"></a>
+                </div>
+            </div>
+
+            <p v-if="title">{{title?getTitle():'titolo non presente'}}</p>
+            <p v-else>Siamo nell'else</p>
+            <input type="text" @keyup.enter="saveElement($event, true)" :value="title" @input="changeTitle">
+            <a href="/" @click.prevent="saveElement($event, false)">Save</a>
         </div>
         <script>
             new Vue({
                 el:'#app',
                 data: {
-                  title: 'Hello World!'
+                  title: 'Hello World!',
+                    numberList: [],
+                    number: undefined,
+                },
+                beforeCreate(){
+                    console.log('fase di creazione');
+                    console.log(this.title);
+                },
+                created(){
+                    console.log('istanza creata e operativa');
+                },
+                beforeMount(){
+                    console.log('istanza in fase di montaggio');
+                },
+                mounted(){
+                    console.log('montato');
+                },
+                beforeUpdate(){
+                    debugger;
+                    console.log('qualcosa sta cambiando');
+                },
+                updated(){
+                    debugger;
+                    console.log('nuovo giorno');
+                },
+                computed: {
+                    sum: function (){
+                        return this.numberList.reduce((acc, el) => {
+                            console.log(acc, el)
+                            return acc + el;
+                        }, 0);
+                    },
+                    average: function (){
+                        return this.numberList.length?(this.sum/this.numberList.length).toFixed(5):0;
+                    }
+                },
+                watch: {
+                    title: function (){
+                        console.log('hai modificato il titolo');
+                    }
                 },
                 methods:{
                     changeTitle: function (event) {
@@ -25,6 +82,24 @@
                         setTimeout(()=>{
                             this.title = "Modificato da JavaScript";
                         }, 2000);
+                    },
+                    addNumber: function (){
+                        if (this.number){
+                            this.numberList.push(+this.number);
+                            this.number = undefined;
+                        }
+                    },
+                    saveElement: function (event, reset){
+                        this.title = event.target.value();
+                        // setTimeout(()=>{
+                        //     alert('Salvataggio completato');
+                        //     if(reset){
+                        //         this.title = '';
+                        //     }
+                        // })
+                    },
+                    getTitle: function (){
+                        return this.title.toUpperCase();
                     }
                 }
             });
